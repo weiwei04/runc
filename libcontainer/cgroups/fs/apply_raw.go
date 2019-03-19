@@ -157,9 +157,9 @@ func (m *Manager) Apply(pid int) (err error) {
 }
 
 func forceEmpty(m *Manager) error {
-	start := time.Now().UnixNanoseconds()
+	start := time.Now().UnixNano()
 	defer func() {
-		log.Infof("memory.force_empty time cost:%d", time.Now.UnixNanoseconds()-start)
+		log.Infof("memory.force_empty time cost:%d", time.Now().UnixNano()-start)
 	}()
 	// temp code to call force_empty before rm cgroupdir
 	// we just want cgroupData, set pid = -1
