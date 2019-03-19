@@ -11,6 +11,7 @@ import (
 	"path"
 	"path/filepath"
 	"sync"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/opencontainers/runc/libcontainer/cgroups"
@@ -156,6 +157,10 @@ func (m *Manager) Apply(pid int) (err error) {
 }
 
 func forceEmpty(m *Manager) error {
+	start := time.Now().UnixNanoseconds()
+	defer func() {
+		log.Infof("memory.force_empty time cost:%d", time.Now.UnixNanoseconds()-start)
+	}()
 	// temp code to call force_empty before rm cgroupdir
 	// we just want cgroupData, set pid = -1
 	d, err := getCgroupData(m.Cgroups, -1)

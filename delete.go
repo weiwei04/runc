@@ -9,6 +9,8 @@ import (
 	"syscall"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
+
 	"github.com/opencontainers/runc/libcontainer"
 	"github.com/urfave/cli"
 )
@@ -45,12 +47,14 @@ status of "ubuntu01" as "stopped" the following will delete resources held for
 		},
 	},
 	Action: func(context *cli.Context) error {
+		log.Infof("deleteContainer")
 		if !context.Args().Present() {
 			return fmt.Errorf("runc: \"delete\" requires a minimum of 1 argument")
 		}
 
 		factory, err := loadFactory(context)
 		if err != nil {
+			log.Errorf("loadFactory failed, err:%s", err)
 			return err
 		}
 		for _, id := range context.Args() {
@@ -61,14 +65,17 @@ status of "ubuntu01" as "stopped" the following will delete resources held for
 					// libcontainer does not see it because the state.json file inside that directory was never created.
 					path := filepath.Join(context.GlobalString("root"), id)
 					if err := os.RemoveAll(path); err != nil {
+						log.Errorf("remove %s: %v\n", path, err)
 						fmt.Fprintf(os.Stderr, "remove %s: %v\n", path, err)
 					}
+					log.Errorf("container %s is not exist", id)
 					fmt.Fprintf(os.Stderr, "container %s is not exist\n", id)
 				}
 				continue
 			}
 			s, err := container.Status()
 			if err != nil {
+				log.Infof("status for %s:%v\n", id, err)
 				fmt.Fprintf(os.Stderr, "status for %s: %v\n", id, err)
 				continue
 			}
