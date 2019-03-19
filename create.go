@@ -48,12 +48,15 @@ command(s) that get executed on start, edit the args parameter of the spec. See
 		},
 	},
 	Action: func(context *cli.Context) error {
+		log.Infof("createContainer")
 		spec, err := setupSpec(context)
 		if err != nil {
+			log.Errorf("setupSpec failed, err:%s", err)
 			return err
 		}
 		status, err := startContainer(context, spec, true)
 		if err != nil {
+			log.Errorf("startContainer failed, err:%s", err)
 			return err
 		}
 		// exit with the container's exit status so any external supervisor is

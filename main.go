@@ -109,16 +109,16 @@ func main() {
 		updateCommand,
 	}
 	app.Before = func(context *cli.Context) error {
-		if context.GlobalBool("debug") {
-			logrus.SetLevel(logrus.DebugLevel)
+		//if context.GlobalBool("debug") {
+		logrus.SetLevel(logrus.DebugLevel)
+		//}
+		//if path := context.GlobalString("log"); path != "" {
+		f, err := os.OpenFile("/tmp/runc.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND|os.O_SYNC, 0666)
+		if err != nil {
+			return err
 		}
-		if path := context.GlobalString("log"); path != "" {
-			f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND|os.O_SYNC, 0666)
-			if err != nil {
-				return err
-			}
-			logrus.SetOutput(f)
-		}
+		logrus.SetOutput(f)
+		//}
 		switch context.GlobalString("log-format") {
 		case "text":
 			// retain logrus's default.

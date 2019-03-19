@@ -8,9 +8,11 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"sync"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/opencontainers/runc/libcontainer/cgroups"
 	"github.com/opencontainers/runc/libcontainer/configs"
 	libcontainerUtils "github.com/opencontainers/runc/libcontainer/utils"
@@ -153,12 +155,40 @@ func (m *Manager) Apply(pid int) (err error) {
 	return nil
 }
 
+func forceEmpty(m *Manager) error {
+	// temp code to call force_empty before rm cgroupdir
+	// we just want cgroupData, set pid = -1
+	d, err := getCgroupData(m.Cgroups, -1)
+	if err != nil {
+		log.Errorf("getCgroupData failed, err:%s", err)
+		return err
+	}
+	mc := &MemoryGroup{}
+	p, err := d.path(mc.Name())
+	if err != nil {
+		log.Errorf("get cgroup path for %s failed, err:%s", mc.Name(), err)
+		return err
+	}
+	f := path.Join(p, "memory.force_empty")
+	log.Infof("try to echo 0 > %s", f)
+	return ioutil.WriteFile(f, []byte("0"), 0700)
+}
+
 func (m *Manager) Destroy() error {
 	if m.Cgroups.Paths != nil {
 		return nil
 	}
 	m.mu.Lock()
 	defer m.mu.Unlock()
+
+	// temp code to call force_empty before remove memcgroup
+	if err := forceEmpty(m); err != nil {
+		log.Errorf("memory.force_empty failed, err:%s", err)
+		return err
+	} else {
+		log.Infof("memory.force_empty successed")
+	}
+
 	if err := cgroups.RemovePaths(m.Paths); err != nil {
 		return err
 	}

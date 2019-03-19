@@ -1,0 +1,41 @@
+package: github.com/opencontainers/runc
+import:
+- package: github.com/Sirupsen/logrus
+  version: 26709e2714106fb8ad40b773b711ebce25b78914
+  repo: git@github.com:sirupsen/logrus.git
+- package: github.com/urfave/cli
+  version: d53eb991652b1d438abdd34ce4bfa3ef1539108e
+- package: github.com/coreos/go-systemd
+  version: b4a58d95188dd092ae20072bac14cece0e67c388
+  subpackages:
+  - activation
+  - dbus
+  - util
+- package: github.com/docker/docker
+  version: 0f5c9d301b9b1cca66b3ea0f9dec3b5317d3686d
+  subpackages:
+  - pkg/mount
+  - pkg/symlink
+  - pkg/term
+- package: github.com/docker/go-units
+  version: 9b001659dd36225e356b4467c465d732e745f53d
+- package: github.com/godbus/dbus
+  version: c7fdd8b5cd55e87b4e1f4e372cdb1db61dd6c66f
+- package: github.com/golang/protobuf
+  version: f7137ae6b19afbfd61a94b746fda3b3fe0491874
+  subpackages:
+  - proto
+- package: github.com/opencontainers/runtime-spec
+  version: 1c7c27d043c2a5e513a44084d2b10d77d1402b8c
+  subpackages:
+  - specs-go
+- package: github.com/seccomp/libseccomp-golang
+  version: 32f571b70023028bd57d9288c20efbcb237f3ce0
+- package: github.com/syndtr/gocapability
+  version: e7cb7fa329f456b3855136a2642b197bad7366ba
+  subpackages:
+  - capability
+- package: github.com/vishvananda/netlink
+  version: 1e2e08e8a2dcdacaae3f14ac44c5cfa31361f270
+  subpackages:
+  - nl
