@@ -176,6 +176,9 @@ func forceEmpty(m *Manager) error {
 	}
 	f := path.Join(p, "memory.force_empty")
 	log.Infof("try to echo 0 > %s", f)
+	// for debug
+	data, _ := ioutil.ReadFile(path.Join(p, "tasks"))
+	log.Infof("%s/tasks: %s", p, string(data))
 	return ioutil.WriteFile(f, []byte("0"), 0700)
 }
 
